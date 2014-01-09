@@ -1,0 +1,153 @@
+#include "display_joystick.h"
+#include <stdbool.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+// Die Tage werden hier ab dem 1.1.1970 gezählt (tagNummer == 0).
+
+int holeDatum()
+{
+  // Ihr Programm hier!
+  
+  //trying by day,month,year
+  
+  int day = 0;
+  int month = 0;
+  int year = 70;
+  int num=0;
+  int tageNummer = 0;
+  
+  int meses[]={31,28,31,30,31,30,31,31,30,31,30,31};
+  
+  bool bisi=false;
+
+  showCursor(true,true);
+  int cursor = 1;
+  bool process = true;
+
+  char s[] = "01.01.70";
+  writeString(s);
+  
+  while(process) {
+    /* Moves cursor to the left */
+    while(readAnalog(0) < 500) {
+      switch(cursor){
+    case 1:
+      cursor = 7;
+      break;
+    case 4:
+      cursor = 1;
+      break;
+    case 7:
+      cursor = 4;
+      break;
+      }
+      
+     //     if(cursor == 2 || cursor == 5) 
+       //     cursor--;
+          
+          
+          moveCursor(0,cursor);
+          waitMilliseconds(1000);
+    }
+    
+    /* Moves cursor to the right */
+    while(readAnalog(0) > 600) {
+         switch(cursor){
+    case 1:
+      cursor = 4;
+      break;
+    case 4:
+      cursor = 7;
+      break;
+    case 7:
+      cursor = 1;
+      break;
+      }
+  
+      /*if(cursor < 7)
+             cursor++;
+
+          if(cursor == 2 || cursor == 5)
+            cursor++;
+          
+      */
+          moveCursor(0,cursor);
+          //num = 0;
+          waitMilliseconds(1000);
+    }
+
+    /* Plus One */
+    while(readAnalog(1) > 600) {
+      // For Days    
+      if(day==31)
+        day=0;
+      if(cursor == 1) {
+        day++;
+        num = day;
+      }
+
+      // For Months
+      if(month==12)
+        month=0;
+      if(cursor == 4) {
+        month++;
+        num = month;
+      }
+      
+      // For Years
+      if(year == 99)
+        year = 70;
+      if(cursor == 7) {
+        year++;
+        num = year;
+      }
+      
+      putCharacter(0,cursor-1,'0'+num/10);
+      putCharacter(0,cursor,'0'+num%10);
+          waitMilliseconds(1000);
+    }
+
+   // bool schaltjahr = (anno % 4 == 0  && (anno % 100 != 0  ||  anno % 400 == 0));
+    if(readAnalog(1)<400) {
+      while(year!=70) {
+        bisi =(year % 4 == 0  && (year % 100 != 0  ||  year % 400 == 0));
+        if(bisi) {
+          tageNummer+=366;
+        } else {
+          tage += 365:
+        }
+        year--;
+      }
+      
+      while(monat!=1) {
+        tageNummer += meses[month]);
+        monat--;
+      }
+      
+      while(day!=1) {
+        tageNummer += (day - 1);
+      }
+      
+      writeString('0'+tageNummer%10);
+      
+      process = false;
+    }
+  }
+}
+
+int main( void )
+{
+  initialize();
+  while(true)
+  {
+    int start = holeDatum();
+    int ende = holeDatum();
+    int differenz = ende - start;
+    writeNumber(abs(differenz));
+    while(readAnalog(1) > 300);
+    while(readAnalog(1) < 400);    
+  }
+  //return 0;
+}
